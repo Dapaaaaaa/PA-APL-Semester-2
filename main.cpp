@@ -28,15 +28,42 @@ int userCount = 1; // 1 untuk admin default
 int donasiCount = 0;
 int kategoriCount = 5;
 
+bool isUsernameExist(const char* uname) {
+    for (int i = 0; i < userCount; i++) {
+        if (strcmp(users[i].username, uname) == 0) {
+            return true; // Username sudah ada
+        }
+    }
+    return false; // Username tersedia
+}
+
 void registrasi() {
     if (userCount >= MAX_USER) {
         cout << "User sudah penuh.\n";
         return;
     }
+
     cout << "\n=== Registrasi ===\n";
-    cout << "Username: "; cin >> users[userCount].username;
-    cout << "Password: "; cin >> users[userCount].password;
+    cin.ignore(); // Penting agar getline() bekerja setelah cin sebelumnya
+    char uname[20], pass[20];
+
+    cout << "Username: ";
+    cin.getline(uname, 20);
+
+    // Cek apakah username sudah digunakan
+    if (isUsernameExist(uname)) {
+        cout << "Username sudah digunakan. Coba yang lain.\n";
+        return;
+    }
+
+    cout << "Password: ";
+    cin.getline(pass, 20);
+
+    // Simpan user baru
+    strcpy(users[userCount].username, uname);
+    strcpy(users[userCount].password, pass);
     strcpy(users[userCount].role, "user");
+
     userCount++;
     cout << "Registrasi berhasil!\n";
 }
@@ -44,8 +71,8 @@ void registrasi() {
 int login() {
     char user[20], pass[20];
     cout << "\n--- Login ---\n";
-    cout << "Username: "; cin >> user;
-    cout << "Password: "; cin >> pass;
+    cout << "Username: "; cin.ignore(); cin.getline(user, 20);
+    cout << "Password: "; cin.getline(pass, 20);
     for (int i = 0; i < userCount; i++) {
         if (strcmp(users[i].username, user) == 0 && strcmp(users[i].password, pass) == 0) {
             return i;
@@ -53,6 +80,7 @@ int login() {
     }
     return -1;
 }
+
 
 void tampilKategori() {
     for (int i = 0; i < kategoriCount; i++) {
