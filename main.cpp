@@ -337,8 +337,14 @@ int main() {
     strcpy(users[0].role, "admin");
     int pilihan;
     do {
-        cout << "\n--- Sistem Donasi ---\n1. Register\n2. Login\n3. Keluar\nPilihan: ";
-        
+        cout << "_________________________\n"; 
+        cout << "|     Sistem Donasi     |\n";
+        cout << "|-----------------------|\n";
+        cout << "|      1. Register      |\n";
+        cout << "|      2. Login         |\n";
+        cout << "|      3. Keluar        |\n";
+        cout << "|-----------------------|\n";
+        cout << "Pilihan: ";
         if (!(cin >> pilihan)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();              // Reset error state
