@@ -323,9 +323,16 @@ void menuUser(int idx) {
     system("clear || cls");
     int pilih;
     do {
-        cout << "\nSelamat datang";
-        cout << "\n--- Menu Donatur ---\n1. Donasi\n2. Lihat Riwayat\n3. Logout\nPilihan: ";
-            if (!(cin >> pilih)) {
+        cout << "_____________________________\n";
+        cout << "|   Selamat Datang Donatur  |\n";
+        cout << "|---------------------------|\n";
+        cout << "|      1. Donasi            |\n";
+        cout << "|      2. Lihat Riwayat     |\n";
+        cout << "|      3. Logout            |\n";
+        cout << "|___________________________|\n";
+        cout << "Pilihan: ";
+
+        if (!(cin >> pilih)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();             
             cin.ignore(10000, '\n');
@@ -335,10 +342,13 @@ void menuUser(int idx) {
         }
         cin.ignore();
         system("clear || cls");
-        
+
         if (pilih == 1) tambahDonasi(idx);
         else if (pilih == 2) lihatRiwayat(idx);
-        else if (pilih != 3) cout << "Pilihan tidak valid";
+        else if (pilih != 3) {
+            cout << "Pilihan tidak valid\n";
+            cin.get();
+        }
     } while (pilih != 3);
 }
 
@@ -346,9 +356,18 @@ void menuAdmin() {
     system("clear || cls");
     int pilih;
     do {
-        cout << "\nSelamat datang admin"; 
-        cout << "\n--- Menu Admin ---\n1. Lihat Donasi\n2. Tambah Kategori\n3. Hapus Kategori\n4. Update Status Donasi\n5. Logout\nPilihan: ";
-            if (!(cin >> pilih)) {
+        cout << "________________________________\n";
+        cout << "|     Selamat Datang Admin     |\n";
+        cout << "|------------------------------|\n";
+        cout << "|     1. Lihat Donasi          |\n";
+        cout << "|     2. Tambah Kategori       |\n";
+        cout << "|     3. Hapus Kategori        |\n";
+        cout << "|     4. Update Status Donasi  |\n";
+        cout << "|     5. Logout                |\n";
+        cout << "|______________________________|\n";
+        cout << "Pilihan: ";
+        
+        if (!(cin >> pilih)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();             
             cin.ignore(10000, '\n');
@@ -364,6 +383,7 @@ void menuAdmin() {
     } while (pilih != 5);
 }
 
+
 int main() {
     system("clear || cls");
     strcpy(users[0].username, "admin");
@@ -371,14 +391,15 @@ int main() {
     strcpy(users[0].role, "admin");
     int pilihan;
     do {
-        cout << "_________________________\n"; 
-        cout << "|     Sistem Donasi     |\n";
-        cout << "|-----------------------|\n";
-        cout << "|      1. Register      |\n";
-        cout << "|      2. Login         |\n";
-        cout << "|      3. Keluar        |\n";
-        cout << "|-----------------------|\n";
+        cout << "_______________________\n";
+        cout << "|    Sistem Donasi    |\n";
+        cout << "|---------------------|\n";
+        cout << "|     1. Register     |\n";
+        cout << "|     2. Login        |\n";
+        cout << "|     3. Keluar       |\n";
+        cout << "|_____________________|\n";
         cout << "Pilihan: ";
+        
         if (!(cin >> pilihan)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();              // Reset error state
