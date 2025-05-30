@@ -116,47 +116,73 @@ void tambahDonasi(int userid) {
         system("clear || cls");
         return;
     }
-    cout << "\n--- Donasi ---\n";
-    tampilKategori();
-    int pilih;
-    cout << "Pilih kategori (1-" << kategoriCount << "): ";
-    if (!(cin >> pilih)) {
-        cout << "Input tidak valid (harus angka).\n";
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cin.get();
-        system("clear || cls");
-        return;
+    int pilih = -1;
+    while (true) {
+        cout << "\n--- Donasi ---\n";
+        tampilKategori();
+        cout << "Pilih kategori (1-" << kategoriCount << "): ";
+
+        if (cin.peek() == '\n') {
+            cout << "Silahkan Pilih Kategori Donasi\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+        if (!(cin >> pilih)) {
+            cout << "Input tidak valid (harus angka).\n";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+        if (pilih < 1 || pilih > kategoriCount) {
+            cout << "Pilihan tidak valid.\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+        break;
     }
 
-    if (pilih < 1 || pilih > kategoriCount) {
-        cout << "Pilihan tidak valid.\n";
-        cin.ignore();
-        cin.get();
-        system("clear || cls");
-        return;
-    }
-    strcpy(donasi[donasiCount].kategori, kategoriDonasi[pilih-1]);
+    cin.ignore(); // Buang newline setelah input angka kategori
+    strcpy(donasi[donasiCount].kategori, kategoriDonasi[pilih - 1]);
+    system("clear || cls");
+    // Input nominal donasi dengan validasi kosong dan angka
+    while (true) {
+        cout << "Masukkan nominal donasi: ";
 
-    cout << "Masukkan nominal donasi: "; 
-    if (!(cin >> donasi[donasiCount].nominal)) {
-        cout << "Input nominal tidak valid.\n";
-        cin.clear(); cin.ignore(10000, '\n');
-        cin.get(); system("clear || cls");
-        return;
-    }
+        if (cin.peek() == '\n') {
+            cout << "Silahkan Masukkan nominal donasi\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
 
-    if (donasi[donasiCount].nominal < 1000) {
-        cout << "Minimal donasi adalah Rp. 1000\n";
-        cin.ignore();
-        cin.get();
-        system("clear || cls");
-        return;
+        if (!(cin >> donasi[donasiCount].nominal)) {
+            cout << "Input nominal tidak valid (harus angka).\n";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+
+        if (donasi[donasiCount].nominal < 1000) {
+            cout << "Minimal donasi adalah Rp. 1000\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+        break;  // Input nominal valid
     }
 
     cin.ignore(); // agar tidak loncat get()
     strcpy(donasi[donasiCount].nama, users[userid].username);
-    strcpy(donasi[donasiCount].kategori, kategoriDonasi[pilih - 1]);
     strcpy(donasi[donasiCount].status, "Pending");
     donasiCount++;
 
@@ -165,6 +191,8 @@ void tambahDonasi(int userid) {
     cin.get();
     system("clear || cls");
 }
+
+
 
 void lihatRiwayat(int userid) {
     bool adaRiwayat = false;
@@ -193,7 +221,7 @@ void tambahKategori() {
         return;
     }
     cout << "Masukkan nama kategori baru: ";
-    cin.ignore(); cin.getline(kategoriDonasi[kategoriCount], 30);
+    cin.getline(kategoriDonasi[kategoriCount], 30);
     kategoriCount++;
     cout << "Kategori berhasil ditambahkan!\n";
     cout << "ENTER....." << endl;
@@ -205,7 +233,7 @@ void hapusKategori() {
     system("clear || cls");
     tampilKategori();
     int pilih;
-    cout << "Pilih kategori yang ingin dihapus: "; cin >> pilih; cin.ignore();
+    cout << "Pilih kategori yang ingin dihapus: "; cin >> pilih;
     
     if (pilih < 1 || pilih > kategoriCount) {
         cout << "Pilihan tidak valid.\n";
@@ -309,7 +337,6 @@ void sortNominalTinggi() {
 void cariDonatur() {
     char nama[20];
     cout << "Masukkan nama donatur: "; 
-    cin.ignore();
     cin.getline(nama, 20);
     bool ketemu = false;
     for (int i = 0; i < donasiCount; i++) {
@@ -326,15 +353,25 @@ void lihatDonasi() {
     int pilih;
     do {
         cout << "\n1. Lihat donasi (A-Z)\n2. Lihat donasi (Z-A)\n3. Nominal tertinggi-terendah\n4. Cari donatur\n5. Kembali\nPilihan: ";
-        if (!(cin >> pilih)) {
-        cout << "Input harus berupa angka.\n";
-        cin.clear();             
-        cin.ignore(10000, '\n');
-        cin.get();
-        system("clear || cls");
-        continue;
+
+        if (cin.peek() == '\n') {
+            cout << "Silahkan Pilih Menu (1-5)\n";
+            cin.ignore();  // buang newline
+            cin.get();
+            system("clear || cls");
+            continue;
         }
-        
+
+        if (!(cin >> pilih)) {
+            cout << "Input harus berupa angka.\n";
+            cin.clear();             
+            cin.ignore(10000, '\n');
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+
+        cin.ignore();
         system("clear || cls");
         switch (pilih) {
             case 1: sortDonasiAZ(); break;
@@ -342,20 +379,26 @@ void lihatDonasi() {
             case 3: sortNominalTinggi(); break;
             case 4: cariDonatur(); continue;
             case 5: return;
-            default: cout << "Pilihan tidak valid.\n";
+            default:
+                cout << "Pilihan tidak valid.\n";
                 cin.get();
                 system("clear || cls");
                 continue;
         }
+
         for (int i = 0; i < donasiCount; i++) {
             cout << donasi[i].nama << " - " << donasi[i].kategori << " - Rp." << donasi[i].nominal << " - " << donasi[i].status << endl;
-        }if (pilih != 5) {
-        cout << "\nTekan enter untuk kembali...";
-        cin.get();
-        system("clear || cls");
         }
+
+        if (pilih != 5) {
+            cout << "\nTekan enter untuk kembali...";
+            cin.get();
+            system("clear || cls");
+        }
+
     } while (pilih != 5);
 }
+
 
 void lihatKategori() {
     system("clear || cls");
@@ -380,6 +423,14 @@ void menuUser(int id) {
         cout << "|      3. Logout            |\n";
         cout << "|___________________________|\n";
         cout << "Pilihan: ";
+
+        if (cin.peek() == '\n') {
+            cout << "Input Pilihan Menu (1-3)\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
 
         if (!(cin >> pilih)) {
             cout << "Input harus berupa angka.\n";
@@ -416,11 +467,28 @@ void menuAdmin() {
         cout << "|     6. Logout                |\n";
         cout << "|______________________________|\n";
         cout << "Pilihan: ";
-        
+
+        if (cin.peek() == '\n') {
+        cout << "Input Pilihan Menu (1-6)\n";
+        cin.ignore();
+        cin.get();
+        system("clear || cls");
+        continue;
+        }
+
         if (!(cin >> pilih)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();             
             cin.ignore(10000, '\n');
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+        if (pilih < 1 || pilih > 6) {
+            cout << "Pilihan tidak valid.\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
             continue;
         }
         cin.ignore();
@@ -451,6 +519,14 @@ int main() {
         cout << "|_____________________|\n";
         cout << "Pilihan: ";
         
+        if (cin.peek() == '\n') {
+            cout << "Input Pilihan Menu (1-3)\n";
+            cin.ignore();
+            cin.get();
+            system("clear || cls");
+            continue;
+        }
+
         if (!(cin >> pilihan)) {
             cout << "Input harus berupa angka.\n";
             cin.clear();              // Reset error state
