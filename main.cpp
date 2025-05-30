@@ -52,8 +52,11 @@ void registrasi() {
     cin.ignore();
     char uname[20], pass[20];
 
+    do {
     cout << "Username: ";
     cin.getline(uname, 20);
+    if (strlen(uname) == 0) cout << "Username tidak boleh kosong!\n";
+    } while (strlen(uname) == 0);
 
     // Cek apakah username sudah digunakan
     if (cekUsername(uname)) {
@@ -64,8 +67,11 @@ void registrasi() {
         return;
     }
 
+    do {
     cout << "Password: ";
     cin.getline(pass, 20);
+    if (strlen(pass) == 0) cout << "Password tidak boleh kosong!\n";
+    } while (strlen(pass) == 0);
 
     // Simpan user baru
     strcpy(users[userCount].username, uname);
@@ -114,21 +120,42 @@ void tambahDonasi(int userIdx) {
     tampilKategori();
     int pilih;
     cout << "Pilih kategori (1-" << kategoriCount << "): "; cin >> pilih;
-    if (pilih < 1 || pilih > kategoriCount) {
-        cout << "Pilihan tidak valid.\n";
-        cin.ignore();
+    if (!(cin >> pilih)) {
+        cout << "Input tidak valid (harus angka).\n";
+        cin.clear();
+        cin.ignore(10000, '\n');
         cin.get();
-        system("cls || clear" );
+        system("clear || cls");
         return;
     }
     strcpy(donasis[donasiCount].kategori, kategoriDonasi[pilih-1]);
-    cout << "Masukkan nominal donasi: "; cin >> donasis[donasiCount].nominal; cin.ignore();
+    
+    cout << "Masukkan nominal donasi: "; 
+    if (!(cin >> donasis[donasiCount].nominal)) {
+        cout << "Input nominal tidak valid.\n";
+        cin.clear(); cin.ignore(10000, '\n');
+        cin.get(); system("clear || cls");
+        return;
+    }
+
+    if (donasis[donasiCount].nominal < 1000) {
+        cout << "Minimal donasi adalah Rp. 1000\n";
+        cin.ignore();
+        cin.get();
+        system("clear || cls");
+        return;
+    }
+
+    cin.ignore(); // agar tidak loncat get()
     strcpy(donasis[donasiCount].nama, users[userIdx].username);
+    strcpy(donasis[donasiCount].kategori, kategoriDonasi[pilih - 1]);
     strcpy(donasis[donasiCount].status, "Pending");
     donasiCount++;
-    cout << "Donasi berhasil disimpan!\n";
+
+    cout << "\n✅ Donasi berhasil disimpan!";
+    cout << "\nTerima kasih atas kebaikan Anda!\n";
     cin.get();
-    system("cls || clear" );
+    system("clear || cls");
 }
 
 void lihatRiwayat(int userIdx) {
@@ -192,25 +219,32 @@ void updateStatus() {
         cout << i+1 << ". " << donasis[i].nama << " - " << donasis[i].kategori << " - Rp." << donasis[i].nominal << " - " << donasis[i].status << endl;
     }
     int pilih;
-    cout << "Pilih nomor donasi yang ingin diupdate: "; cin >> pilih; cin.ignore();
-    if (pilih < 1 || pilih > donasiCount) {
-        cout << "Pilihan tidak valid.\n";  
-        cin.get();
-        system("clear || cls");
-        return;
+    cout << "Pilih nomor donasi yang ingin diupdate: "; 
+    cin >> pilih; cin.ignore();
+    if (!(cin >> pilih)) {
+    cout << "Input tidak valid (harus angka).\n";
+    cin.clear();
+    cin.ignore(10000, '\n');
+    cin.get();
+    system("clear || cls");
+    return;
     }
+cin.ignore();
     cout << "\n=== Konfirmasi Status Donasi ===\n";
-    cout << "1. Terima\n2. Kembali\n";
-    cout << "Pilihan : ";
-    int konfirmasi;
-    cin >> konfirmasi; cin.ignore();
-    if (konfirmasi == 1) {
+    cout << "Terima donasi ini? (y/n): ";
+    char konfirmasi;
+    cin >> konfirmasi;
+    cin.ignore();
+
+    if (konfirmasi == 'y' || konfirmasi == 'Y') {
         strcpy(donasis[pilih-1].status, "Terima");
         cout << "Status donasi berhasil diperbarui!\n";
-        cout << "ENTER....." << endl;
-        cin.get();
-        system("clear || cls");
+    } else {
+        cout << "Status tidak diubah.\n";
     }
+    cout << "ENTER....." << endl;
+    cin.get();
+    system("clear || cls");
 }
 
 void sortDonasiAZ() {
