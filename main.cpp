@@ -23,7 +23,7 @@ struct Donasi {
 User users[MAX_USER] = {
     {"admin", "admin", "admin"}
 };
-Donasi donasis[MAX_DONASI];
+Donasi donasi[MAX_DONASI];
 char kategoriDonasi[MAX_KATEGORI][30] = {"Kesehatan", "Bencana Alam", "Kecelakaan", "Panti", "Pendidikan"};
 int userCount = 1; // 1 untuk admin default
 int donasiCount = 0;
@@ -108,7 +108,7 @@ void tampilKategori() {
     }
 }
 
-void tambahDonasi(int userIdx) {
+void tambahDonasi(int userid) {
     if (donasiCount >= MAX_DONASI) {
         cout << "Donasi penuh.\n";
         cout << "ENTER....." << endl;
@@ -128,17 +128,25 @@ void tambahDonasi(int userIdx) {
         system("clear || cls");
         return;
     }
-    strcpy(donasis[donasiCount].kategori, kategoriDonasi[pilih-1]);
+
+    if (pilih < 1 || pilih > kategoriCount) {
+        cout << "Pilihan tidak valid.\n";
+        cin.ignore();
+        cin.get();
+        system("clear || cls");
+        return;
+    }
+    strcpy(donasi[donasiCount].kategori, kategoriDonasi[pilih-1]);
 
     cout << "Masukkan nominal donasi: "; 
-    if (!(cin >> donasis[donasiCount].nominal)) {
+    if (!(cin >> donasi[donasiCount].nominal)) {
         cout << "Input nominal tidak valid.\n";
         cin.clear(); cin.ignore(10000, '\n');
         cin.get(); system("clear || cls");
         return;
     }
 
-    if (donasis[donasiCount].nominal < 1000) {
+    if (donasi[donasiCount].nominal < 1000) {
         cout << "Minimal donasi adalah Rp. 1000\n";
         cin.ignore();
         cin.get();
@@ -147,9 +155,9 @@ void tambahDonasi(int userIdx) {
     }
 
     cin.ignore(); // agar tidak loncat get()
-    strcpy(donasis[donasiCount].nama, users[userIdx].username);
-    strcpy(donasis[donasiCount].kategori, kategoriDonasi[pilih - 1]);
-    strcpy(donasis[donasiCount].status, "Pending");
+    strcpy(donasi[donasiCount].nama, users[userid].username);
+    strcpy(donasi[donasiCount].kategori, kategoriDonasi[pilih - 1]);
+    strcpy(donasi[donasiCount].status, "Pending");
     donasiCount++;
 
     cout << "\nDonasi berhasil disimpan!";
@@ -158,13 +166,15 @@ void tambahDonasi(int userIdx) {
     system("clear || cls");
 }
 
-void lihatRiwayat(int userIdx) {
+void lihatRiwayat(int userid) {
     bool adaRiwayat = false;
     cout << "\n--- Riwayat Donasi ---\n";
+    int nomor = 1;
     for (int i = 0; i < donasiCount; i++) {
-        if (strcmp(donasis[i].nama, users[userIdx].username) == 0) {
-            cout << i+1 << ". " << donasis[i].kategori << " - Rp." << donasis[i].nominal << " - " << donasis[i].status << endl;
+        if (strcmp(donasi[i].nama, users[userid].username) == 0) {
+            cout << nomor << ". " << donasi[i].kategori << " - Rp." << donasi[i].nominal << " - " << donasi[i].status << endl;
             adaRiwayat = true;
+            nomor++;
         }
     }if (!adaRiwayat) {
         cout << "Belum memiliki riwayat donasi";
@@ -203,6 +213,16 @@ void hapusKategori() {
         system("clear || cls");
         return;
     }
+
+    cin.ignore();
+
+    if (pilih < 1 || pilih > kategoriCount) {
+        cout << "Pilihan tidak valid.\n";
+        cin.get();
+        system("clear || cls");
+        return;
+    }
+
     for (int i = pilih-1; i < kategoriCount-1; i++) {
         strcpy(kategoriDonasi[i], kategoriDonasi[i+1]);
     }
@@ -216,11 +236,11 @@ void hapusKategori() {
 void updateStatus() {
     system("clear || cls");
     for (int i = 0; i < donasiCount; i++) {
-        cout << i+1 << ". " << donasis[i].nama << " - " << donasis[i].kategori << " - Rp." << donasis[i].nominal << " - " << donasis[i].status << endl;
+        cout << i+1 << ". " << donasi[i].nama << " - " << donasi[i].kategori << " - Rp." << donasi[i].nominal << " - " << donasi[i].status << endl;
     }
     int pilih;
     cout << "Pilih nomor donasi yang ingin diupdate: "; 
-    cin >> pilih; cin.ignore();
+
     if (!(cin >> pilih)) {
     cout << "Input tidak valid (harus angka).\n";
     cin.clear();
@@ -229,7 +249,16 @@ void updateStatus() {
     system("clear || cls");
     return;
     }
+
+    if (pilih < 1 || pilih > donasiCount) {
+    cout << "Nomor donasi tidak valid.\n";
+    cin.get();
+    system("clear || cls");
+    return;
+}
+
 cin.ignore();
+
     cout << "\n=== Konfirmasi Status Donasi ===\n";
     cout << "Terima donasi ini? (y/n): ";
     char konfirmasi;
@@ -237,7 +266,7 @@ cin.ignore();
     cin.ignore();
 
     if (konfirmasi == 'y' || konfirmasi == 'Y') {
-        strcpy(donasis[pilih-1].status, "Terima");
+        strcpy(donasi[pilih-1].status, "Terima");
         cout << "Status donasi berhasil diperbarui!\n";
     } else {
         cout << "Status tidak diubah.\n";
@@ -250,8 +279,8 @@ cin.ignore();
 void sortDonasiAZ() {
     for (int i = 0; i < donasiCount-1; i++) {
         for (int j = i+1; j < donasiCount; j++) {
-            if (strcmp(donasis[i].nama, donasis[j].nama) > 0) {
-                swap(donasis[i], donasis[j]);
+            if (strcmp(donasi[i].nama, donasi[j].nama) > 0) {
+                swap(donasi[i], donasi[j]);
             }
         }
     }
@@ -260,8 +289,8 @@ void sortDonasiAZ() {
 void sortDonasiZA() {
     for (int i = 0; i < donasiCount-1; i++) {
         for (int j = i+1; j < donasiCount; j++) {
-            if (strcmp(donasis[i].nama, donasis[j].nama) < 0) {
-                swap(donasis[i], donasis[j]);
+            if (strcmp(donasi[i].nama, donasi[j].nama) < 0) {
+                swap(donasi[i], donasi[j]);
             }
         }
     }
@@ -270,8 +299,8 @@ void sortDonasiZA() {
 void sortNominalTinggi() {
     for (int i = 0; i < donasiCount-1; i++) {
         for (int j = i+1; j < donasiCount; j++) {
-            if (donasis[i].nominal < donasis[j].nominal) {
-                swap(donasis[i], donasis[j]);
+            if (donasi[i].nominal < donasi[j].nominal) {
+                swap(donasi[i], donasi[j]);
             }
         }
     }
@@ -279,11 +308,13 @@ void sortNominalTinggi() {
 
 void cariDonatur() {
     char nama[20];
-    cout << "Masukkan nama donatur: "; cin >> nama;
+    cout << "Masukkan nama donatur: "; 
+    cin.ignore();
+    cin.getline(nama, 20);
     bool ketemu = false;
     for (int i = 0; i < donasiCount; i++) {
-        if (strcmp(donasis[i].nama, nama) == 0) {
-            cout << donasis[i].kategori << " - Rp." << donasis[i].nominal << " - " << donasis[i].status << endl;
+        if (strcmp(donasi[i].nama, nama) == 0) {
+            cout << donasi[i].kategori << " - Rp." << donasi[i].nominal << " - " << donasi[i].status << endl;
             ketemu = true;
         }
     }
@@ -295,8 +326,15 @@ void lihatDonasi() {
     int pilih;
     do {
         cout << "\n1. Lihat donasi (A-Z)\n2. Lihat donasi (Z-A)\n3. Nominal tertinggi-terendah\n4. Cari donatur\n5. Kembali\nPilihan: ";
-        cin >> pilih;
-        cin.ignore();
+        if (!(cin >> pilih)) {
+        cout << "Input harus berupa angka.\n";
+        cin.clear();             
+        cin.ignore(10000, '\n');
+        cin.get();
+        system("clear || cls");
+        continue;
+        }
+        
         system("clear || cls");
         switch (pilih) {
             case 1: sortDonasiAZ(); break;
@@ -310,7 +348,7 @@ void lihatDonasi() {
                 continue;
         }
         for (int i = 0; i < donasiCount; i++) {
-            cout << donasis[i].nama << " - " << donasis[i].kategori << " - Rp." << donasis[i].nominal << " - " << donasis[i].status << endl;
+            cout << donasi[i].nama << " - " << donasi[i].kategori << " - Rp." << donasi[i].nominal << " - " << donasi[i].status << endl;
         }if (pilih != 5) {
         cout << "\nTekan enter untuk kembali...";
         cin.get();
@@ -319,7 +357,18 @@ void lihatDonasi() {
     } while (pilih != 5);
 }
 
-void menuUser(int idx) {
+void lihatKategori() {
+    system("clear || cls");
+    cout << "\n=== Kategori Donasi ===\n";
+    for (int i = 0; i < kategoriCount; i++) {
+        cout << i+1 << ". " << kategoriDonasi[i] << endl;
+    }
+    cout << "\nTekan enter untuk kembali...";
+    cin.get();
+    system("clear || cls");
+}
+
+void menuUser(int id) {
     system("clear || cls");
     int pilih;
     do {
@@ -343,8 +392,8 @@ void menuUser(int idx) {
         cin.ignore();
         system("clear || cls");
 
-        if (pilih == 1) tambahDonasi(idx);
-        else if (pilih == 2) lihatRiwayat(idx);
+        if (pilih == 1) tambahDonasi(id);
+        else if (pilih == 2) lihatRiwayat(id);
         else if (pilih != 3) {
             cout << "Pilihan tidak valid\n";
             cin.get();
@@ -360,10 +409,11 @@ void menuAdmin() {
         cout << "|     Selamat Datang Admin     |\n";
         cout << "|------------------------------|\n";
         cout << "|     1. Lihat Donasi          |\n";
-        cout << "|     2. Tambah Kategori       |\n";
-        cout << "|     3. Hapus Kategori        |\n";
-        cout << "|     4. Update Status Donasi  |\n";
-        cout << "|     5. Logout                |\n";
+        cout << "|     2. Lihat Kategori        |\n";
+        cout << "|     3. Tambah Kategori       |\n";
+        cout << "|     4. Hapus Kategori        |\n";
+        cout << "|     5. Update Status Donasi  |\n";
+        cout << "|     6. Logout                |\n";
         cout << "|______________________________|\n";
         cout << "Pilihan: ";
         
@@ -376,10 +426,11 @@ void menuAdmin() {
         cin.ignore();
         system("clear || cls");
         if (pilih == 1) lihatDonasi();
-        else if (pilih == 2) tambahKategori();
-        else if (pilih == 3) hapusKategori();
-        else if (pilih == 4) updateStatus();
-        else if (pilih == 5) break;
+        if (pilih == 2) lihatKategori();
+        else if (pilih == 3) tambahKategori();
+        else if (pilih == 4) hapusKategori();
+        else if (pilih == 5) updateStatus();
+        else if (pilih == 6) break;
     } while (pilih != 5);
 }
 
@@ -411,13 +462,13 @@ int main() {
 
         if (pilihan == 1) registrasi();
         else if (pilihan == 2) {
-            int idx = login();
-            if (idx == -1) {cout << "Login gagal.\nEnter.....";
+            int id = login();
+            if (id == -1) {cout << "Login gagal.\nEnter.....";
                 cin.get();
                 system("clear || cls");
             }
-            else if (strcmp(users[idx].role, "admin") == 0) menuAdmin();
-            else menuUser(idx);
+            else if (strcmp(users[id].role, "admin") == 0) menuAdmin();
+            else menuUser(id);
         }else if (pilihan != 3){
             cout << "Pilihan tidak valid\n";
             cin.ignore();
