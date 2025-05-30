@@ -119,7 +119,7 @@ void tambahDonasi(int userIdx) {
     cout << "\n--- Donasi ---\n";
     tampilKategori();
     int pilih;
-    cout << "Pilih kategori (1-" << kategoriCount << "): "; cin >> pilih;
+    cout << "Pilih kategori (1-" << kategoriCount << "): ";
     if (!(cin >> pilih)) {
         cout << "Input tidak valid (harus angka).\n";
         cin.clear();
@@ -129,7 +129,7 @@ void tambahDonasi(int userIdx) {
         return;
     }
     strcpy(donasis[donasiCount].kategori, kategoriDonasi[pilih-1]);
-    
+
     cout << "Masukkan nominal donasi: "; 
     if (!(cin >> donasis[donasiCount].nominal)) {
         cout << "Input nominal tidak valid.\n";
@@ -152,7 +152,7 @@ void tambahDonasi(int userIdx) {
     strcpy(donasis[donasiCount].status, "Pending");
     donasiCount++;
 
-    cout << "\n✅ Donasi berhasil disimpan!";
+    cout << "\nDonasi berhasil disimpan!";
     cout << "\nTerima kasih atas kebaikan Anda!\n";
     cin.get();
     system("clear || cls");
